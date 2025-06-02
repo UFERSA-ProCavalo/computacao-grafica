@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CA1F507E-A53E-4ABC-9D85-70FE3DF2E481}|WinDXUT\\WinDXUT.vcxproj|C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\WinDXUT\\WinApp.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CA1F507E-A53E-4ABC-9D85-70FE3DF2E481}|WinDXUT\\WinDXUT.vcxproj|solutionrelative:WinDXUT\\WinApp.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CA1F507E-A53E-4ABC-9D85-70FE3DF2E481}|WinDXUT\\WinDXUT.vcxproj|C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\WinDXUT\\Window.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CA1F507E-A53E-4ABC-9D85-70FE3DF2E481}|WinDXUT\\WinDXUT.vcxproj|solutionrelative:WinDXUT\\Window.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Window.cpp",
+              "DocumentMoniker": "C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\WinDXUT\\Window.cpp",
+              "RelativeDocumentMoniker": "WinDXUT\\Window.cpp",
+              "ToolTip": "C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\WinDXUT\\Window.cpp",
+              "RelativeToolTip": "WinDXUT\\Window.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-06-02T19:44:16.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WinApp.cpp",
+              "DocumentMoniker": "C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\WinDXUT\\WinApp.cpp",
+              "RelativeDocumentMoniker": "WinDXUT\\WinApp.cpp",
+              "ToolTip": "C:\\Users\\NEaD_TI\\Documents\\CG\\Lab03\\Lab03S\\WinDXUT\\WinDXUT\\WinApp.cpp",
+              "RelativeToolTip": "WinDXUT\\WinApp.cpp",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAmwHMAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-06-02T17:42:29.437Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
