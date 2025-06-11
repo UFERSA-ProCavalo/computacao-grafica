@@ -1,21 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\",
+  "WorkspaceRootPath": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Curves.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Curves.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|solutionrelative:Curves\\Curves.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Curves.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Curves.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|solutionrelative:Curves\\Curves.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Pipeline.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Pipeline.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|solutionrelative:Curves\\Pipeline.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Vertex.hlsl||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Vertex.hlsl||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{6EA1318B-7358-4FD0-BFBA-53DB11A231AA}|Curves\\Curves.vcxproj|solutionrelative:Curves\\Vertex.hlsl||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
@@ -35,11 +35,11 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Pipeline.cpp",
-              "DocumentMoniker": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Pipeline.cpp",
+              "DocumentMoniker": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Pipeline.cpp",
               "RelativeDocumentMoniker": "Curves\\Pipeline.cpp",
-              "ToolTip": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Pipeline.cpp",
+              "ToolTip": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Pipeline.cpp",
               "RelativeToolTip": "Curves\\Pipeline.cpp",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAAAEsAAAAwAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAE0AAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-06-10T02:58:01.688Z"
             },
@@ -47,9 +47,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "Vertex.hlsl",
-              "DocumentMoniker": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Vertex.hlsl",
+              "DocumentMoniker": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Vertex.hlsl",
               "RelativeDocumentMoniker": "Curves\\Vertex.hlsl",
-              "ToolTip": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Vertex.hlsl",
+              "ToolTip": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Vertex.hlsl",
               "RelativeToolTip": "Curves\\Vertex.hlsl",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
@@ -59,11 +59,11 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Curves.h",
-              "DocumentMoniker": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Curves.h",
+              "DocumentMoniker": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Curves.h",
               "RelativeDocumentMoniker": "Curves\\Curves.h",
-              "ToolTip": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Curves.h",
+              "ToolTip": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Curves.h",
               "RelativeToolTip": "Curves\\Curves.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAiwCAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-06-10T01:49:26.368Z"
             },
@@ -71,11 +71,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Curves.cpp",
-              "DocumentMoniker": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Curves.cpp",
+              "DocumentMoniker": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Curves.cpp",
               "RelativeDocumentMoniker": "Curves\\Curves.cpp",
-              "ToolTip": "D:\\System\\Desktop\\cg\\Lab08 - Copy\\Curves\\Curves\\Curves.cpp",
+              "ToolTip": "D:\\System\\Desktop\\computacao-grafica\\TP1\\Curves\\Curves\\Curves.cpp",
               "RelativeToolTip": "Curves\\Curves.cpp",
-              "ViewState": "AgIAAEcAAAAAAAAAAADwv0cAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAANIAAAAAAAAAAAAAAOAAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-06-10T01:47:36.319Z",
               "EditorCaption": ""

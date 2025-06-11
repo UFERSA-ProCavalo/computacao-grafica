@@ -28,13 +28,14 @@ private:
     ID3D12PipelineState* pipelineState;
     VertexBuffer<Vertex>* vbuffer;
 
-    static const uint MaxSize = 5120;
+    static const uint MaxControlPoints = 4;
+    static const uint LineSegs = 256;
+
+    static const uint MaxSize = LineSegs * 21;
     Vertex vertices[MaxSize];
     uint count = 0;
     uint index = 0;
 
-    static const uint MaxControlPoints = 4;
-    static const uint LineSegs = 256;
     bool bezierMode = false;
 
     enum BezierState {
@@ -76,7 +77,7 @@ private:
     void CalculateBezierCurve();
     void UpdateControlRect();
 
-    
+
 };
 
 // ------------------------------------------------------------------------------

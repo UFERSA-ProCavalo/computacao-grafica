@@ -2,15 +2,15 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\System\Desktop\cg\Lab08\Curves\x64\Debug\Curves.exe</FullPath>
+      <FullPath>D:\System\Desktop\computacao-grafica\TP1\Curves\x64\Debug\Curves.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>D:\System\Desktop\cg\Lab08\Curves\Curves\Shaders\Pixel.cso</FullPath>
+      <FullPath>D:\System\Desktop\computacao-grafica\TP1\Curves\Curves\Shaders\Pixel.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>D:\System\Desktop\cg\Lab08\Curves\Curves\Shaders\Vertex.cso</FullPath>
+      <FullPath>D:\System\Desktop\computacao-grafica\TP1\Curves\Curves\Shaders\Vertex.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />

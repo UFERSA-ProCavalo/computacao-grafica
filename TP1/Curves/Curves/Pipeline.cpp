@@ -78,7 +78,7 @@ void Curves::BuildPipelineState()
     rasterizer.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
     rasterizer.DepthClipEnable = TRUE;
     rasterizer.MultisampleEnable = FALSE;
-    rasterizer.AntialiasedLineEnable = FALSE;
+    rasterizer.AntialiasedLineEnable = TRUE;
     rasterizer.ForcedSampleCount = 0;
     rasterizer.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 

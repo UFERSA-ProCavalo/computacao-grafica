@@ -117,8 +117,17 @@ void Curves::Update()
     float x = (mx - cx) / cx;
     float y = (cy - my) / cy;
 
+
+    // --- FUNCIONAMENTO ---
+    // O programa para Bézier envolve 4 estados
     switch (bezierState)
     {
+    // (1) estado Esperando_p1
+    // O estado inicial do programa;
+    // Só é executado antes da primeira curva;
+    // Fica aguardando o primeiro clique;
+    // Após o primeiro clique, cria os 2 primeiros pontos na coordenada do mouse;
+    // Passa para o próximo estado.
     case Esperando_p1:
         if (input->KeyPress(VK_LBUTTON))
         {
@@ -130,60 +139,93 @@ void Curves::Update()
         }
         break;
 
+    // (2) estado Ajustando_p2
+    // O segundo estado do programa;
+    // Inicializa verificando a quantidade de pontos de controle existentes;
     case Ajustando_p2:
 
-        P[1].Pos.x = 2.0f * P[0].Pos.x - x;
-        P[1].Pos.y = 2.0f * P[0].Pos.y - y;
+        // caso qtd == 2:
+        // A primeira sequência de execução do algoritmo;
+        // Ajusta a posição do segundo ponto de controle;
+        // Cria as linhas de guia da posição do mouse;
+        // Aguarda o ajuste do usuário esperando o clique;
+        // Passa pro próximo estado;
+        if (controlPointCount == 2) {
+            P[1].Pos.x = 2.0f * P[0].Pos.x - x;
+            P[1].Pos.y = 2.0f * P[0].Pos.y - y;
 
-        guideLine[0] = P[0];
-        guideLine[0].Color = { 0.5, 0.5, 0.5, 0.5f };
-        guideLine[1] = { {x,y,0.0f}, XMFLOAT4(Colors::Transparent) };
-        guideLineCount = 2;
+            guideLine[0] = P[0];
+            guideLine[0].Color = { XMFLOAT4(Colors::LightCyan) };
+            guideLine[1] = { {x,y,0.0f}, XMFLOAT4(Colors::Transparent) };
+            guideLineCount = 2;
 
+            if (input->KeyPress(VK_LBUTTON))
+            {
+                bezierState = Esperando_p3;
+            }
+        }
 
-        if (input->KeyPress(VK_LBUTTON))
-        {
+        // caso qtd == 4:
+        // O processo de execução após a primeira curva ser feita;
+        // Passa o ponto 1 para o ponto 4;
+        // Ajusta a posição do ponto 2 (reflete a posição para fazer o ajuste correto);
+        // Ajusta as linhas de guia da posição do mouse;
+        // Passa para o próximo estado;
+        else if (controlPointCount == 4) {
+            P[0] = P[3];
+            P[1].Pos.x = 2.0f * P[3].Pos.x - P[2].Pos.x;
+            P[1].Pos.y = 2.0f * P[3].Pos.y - P[2].Pos.y;
+            guideLine[0] = guideLine[3];
+            guideLine[1] = guideLine[2];
+
             bezierState = Esperando_p3;
         }
+
+        
         break;
 
+    // (3) estado Esperando_p3
+    // Cria OU redefine os pontos 3 e 4;
+    // Permite o ajuste dos pontos de controle;
+    // Continuamente calcula a curva, permitindo a pré-visualização da curva;
+    // Aguarda o ajuste do usuário através do clique;
+    // Passa para o próximo estado;
     case Esperando_p3:
+
+        P[2] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) };
+        P[3] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) };
+        controlPointCount = 4;
+
+        P[2].Pos.x = x;
+        P[2].Pos.y = y;
+        P[3].Pos.x = x;
+        P[3].Pos.y = y;
+
+        CalculateBezierCurve();
+
         if (input->KeyPress(VK_LBUTTON))
         {
-            if (controlPointCount == 2)
-            {
-                P[2] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) };
-                P[3] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) };
-                controlPointCount = 4;
-                bezierState = Ajustando_p4;
-            }
-            else if (controlPointCount == 4)
-            {
-
-                P[0] = P[3]; // Ajusta o ponto 1 para o ponto 3
-                P[0].Color = XMFLOAT4(Colors::Red);
-
-                P[1].Pos.x = 2.0f * P[3].Pos.x - P[2].Pos.x;
-                P[1].Pos.y = 2.0f * P[3].Pos.y - P[2].Pos.y;
-
-                guideLine[0] = guideLine[3];
-                guideLine[1] = guideLine[2];
-
-                // Se já houver 4 pontos, ajusta o ponto 2 e 3
-                P[2] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) }; // Define o ponto 3
-                P[3] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) };
-
-                bezierState = Ajustando_p4;
-            }
+            curveCount = 0; // Reseta a contagem de curvas
+            P[3] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::Red) };
+            bezierState = Ajustando_p4;
         }
         break;
 
+
+    // (4) estado Ajustando_p4
+    // Estado de ajuste do último ponto;
+    // Fixa o ponto 4 e ajusta a posição do ponto 3;
+    // Cria e ajusta as 2 linhas guias dos 2 últimos pontos de controle;
+    // Calcula a curva novamente, agora com o ponto 3 fixado;
+    // No próximo clique, repete o ciclo zerando o valor de pontos da curva e voltando pro estado 2;
+    // Caso chegue no limite de curvas (Segmentos * 20), utiliza uma lógica para sobrescrever as primeiras curvas;
     case Ajustando_p4:
-        P[2].Pos.x = 2.0f * P[3].Pos.x - x; // Ajusta o ponto de controle 4 para manter simetria
+
+        P[2].Pos.x = 2.0f * P[3].Pos.x - x; // Ajusta o ponto de controle 3 para manter simetria
         P[2].Pos.y = 2.0f * P[3].Pos.y - y;
 
         guideLine[2] = P[2];
-        guideLine[2].Color = { 0.5, 0.5, 0.5, 0.0f };
+        guideLine[2].Color = { XMFLOAT4(Colors::LightCyan) };
         guideLine[3] = { {x,y,0.0f}, XMFLOAT4(Colors::Transparent) };
         guideLineCount = 4;
 
@@ -202,14 +244,18 @@ void Curves::Update()
             }
 
             curveCount = 0; // Reseta a contagem de curvas
-            bezierState = Esperando_p3;
+            bezierState = Ajustando_p2;
         }
         break;
     }
 
+    //Retângulos sob os pontos de controle
     UpdateControlRect();
+
     graphics->PrepareGpu(pipelineState);
 
+    //Garantia dos buffers
+    uint totalCurveCount = savedCurveCount + curveCount;
     if (controlPointCount > 0)
     {
         cp_vbuffer->Copy(P, controlPointCount);
@@ -217,14 +263,9 @@ void Curves::Update()
         guide_vbuffer->Copy(guideLine, guideLineCount);
         rect_vbuffer->Copy(rectVertices, controlPointCount);
     }
-
-    uint totalCurveCount = savedCurveCount + curveCount;
     if (totalCurveCount > 0)
     {
         curve_vbuffer->Copy(vertices, totalCurveCount);
-    }
-    if (guideLineCount > 0)
-    {
     }
 
     graphics->SendToGpu();
@@ -257,7 +298,7 @@ void Curves::Display()
         {
             // Define o buffer para as linhas
             graphics->CommandList()->IASetVertexBuffers(0, 1, cp_vbuffer->View());
-            graphics->CommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+            graphics->CommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
             graphics->CommandList()->DrawInstanced(controlPointCount, 1, 0, 0);
         }
 
@@ -304,6 +345,7 @@ void Curves::Finalize()
     delete rect_vbuffer;
 }
 
+// Fórmula da Curva de Bézier Cúbica
 void Curves::CalculateBezierCurve()
 {
     float t, x, y;
@@ -312,7 +354,6 @@ void Curves::CalculateBezierCurve()
     {
         t = 1.0f / LineSegs * i;
 
-        // Fórmula da Curva de Bézier Cúbica
         float one_minus_t = 1.0f - t;
         float one_minus_t_sq = one_minus_t * one_minus_t;
         float t_sq = t * t;
@@ -327,7 +368,7 @@ void Curves::CalculateBezierCurve()
             (3.0f * t_sq * one_minus_t) * P[2].Pos.y +
             (t_sq * t) * P[3].Pos.y;
 
-        vertices[savedCurveCount + i] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::White) };
+        vertices[savedCurveCount + i] = { XMFLOAT3(x, y, 0.0f), XMFLOAT4(Colors::DarkCyan) };
     }
 
     curveCount = LineSegs + 1;
@@ -337,13 +378,12 @@ void Curves::UpdateControlRect()
 {
     if (controlPointCount == 0) return;
 
-    float w = float(window->Width());
-    float h = float(window->Height());
-
-    float ratio = w / h;
-
     float pointSize = 0.02f;
 
+    //Ajuste de acordo com a resolução para manter o quadrado
+    float w = float(window->Width());
+    float h = float(window->Height());
+    float ratio = w / h;
     float sizeY = pointSize;
     float sizeX = pointSize / ratio;
 
@@ -411,8 +451,6 @@ void Curves::Load()
 
     file.close();
 
-    curveCount = 0;
-    guideLineCount = 0;
 }
 // ------------------------------------------------------------------------------
 //                                  WinMain                                      
@@ -433,7 +471,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
         engine->window->LostFocus(Engine::Pause);
         engine->window->InFocus(Engine::Resume);
         engine->graphics->VSync(true);
-        
+
 
         // cria e executa a aplicação
         engine->Start(new Curves());
