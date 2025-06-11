@@ -1,0 +1,6 @@
+﻿  compilation object save succeeded; see D:\System\Desktop\cg\Lab08\Curves\Curves\Shaders\Pixel.cso
+  compilation object save succeeded; see D:\System\Desktop\cg\Lab08\Curves\Curves\Shaders\Vertex.cso
+  Curves.cpp
+D:\System\Desktop\cg\Lab08\Curves\Curves\Curves.cpp(124,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\System\Desktop\cg\Lab08\Curves\Curves\Curves.cpp(128,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Curves.vcxproj -> D:\System\Desktop\cg\Lab08\Curves\x64\Debug\Curves.exe
