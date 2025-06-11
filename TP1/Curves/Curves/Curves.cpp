@@ -298,7 +298,7 @@ void Curves::Display()
         {
             // Define o buffer para as linhas
             graphics->CommandList()->IASetVertexBuffers(0, 1, cp_vbuffer->View());
-            graphics->CommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+            graphics->CommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
             graphics->CommandList()->DrawInstanced(controlPointCount, 1, 0, 0);
         }
 

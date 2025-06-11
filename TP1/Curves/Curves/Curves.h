@@ -31,7 +31,7 @@ private:
     static const uint MaxControlPoints = 4;
     static const uint LineSegs = 256;
 
-    static const uint MaxSize = LineSegs * 21;
+    static const uint MaxSize = LineSegs * 50;
     Vertex vertices[MaxSize];
     uint count = 0;
     uint index = 0;

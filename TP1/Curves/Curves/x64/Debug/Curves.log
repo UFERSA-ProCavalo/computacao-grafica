@@ -1,2 +1,4 @@
 ﻿  Curves.cpp
+  Pipeline.cpp
+  LINK : D:\System\Desktop\computacao-grafica\TP1\Curves\x64\Debug\Curves.exe not found or not built by the last incremental link; performing full link
   Curves.vcxproj -> D:\System\Desktop\computacao-grafica\TP1\Curves\x64\Debug\Curves.exe
