@@ -1,11 +1,11 @@
 /**********************************************************************************
-// Multiple (Código Fonte)
+// Multiple (CÃ³digo Fonte)
 //
-// Criação:     27 Abr 2016
-// Atualização: 22 Jun 2025
+// CriaÃ§Ã£o:     27 Abr 2016
+// AtualizaÃ§Ã£o: 22 Jun 2025
 // Compilador:  Visual C++ 2022
 //
-// Descrição:   Cena 3D usando múltiplos buffers, um por objeto
+// DescriÃ§Ã£o:   Cena 3D usando mÃºltiplos buffers, um por objeto
 //
 **********************************************************************************/
 
@@ -20,20 +20,20 @@ Timer Multiple::timer;
 void Multiple::Init()
 {
     // --------------------------------------
-    // Transformação, Visualização e Projeção
+    // TransformaÃ§Ã£o, VisualizaÃ§Ã£o e ProjeÃ§Ã£o
     // --------------------------------------
 
-    // posição inicial da câmera
+    // posiÃ§Ã£o inicial da cÃ¢mera
     camera = { XM_PIDIV2, XM_PIDIV4, 5.0f };
 
-    // inicializa a matriz de projeção
+    // inicializa a matriz de projeÃ§Ã£o
     XMStoreFloat4x4(&Proj, XMMatrixPerspectiveFovLH(
         XMConvertToRadians(45.0f), 
         window->AspectRatio(), 
         1.0f, 100.0f));
 
     // -------------------------------------------
-    // Criação das Geometrias: Vértices e Índices
+    // CriaÃ§Ã£o das Geometrias: VÃ©rtices e Ãndices
     // -------------------------------------------
 
     Box box(2.0f, 2.0f, 2.0f, Orange);
@@ -42,7 +42,7 @@ void Multiple::Init()
     Grid grid(3.0f, 3.0f, 20, 20, Gray);
 
     // -------------------------
-    // Definição dos Objetos 3D
+    // DefiniÃ§Ã£o dos Objetos 3D
     // -------------------------
 
     // box
@@ -117,16 +117,16 @@ void Multiple::Update()
             timer.Stop();
     }
 
-    // atualiza posição da câmera
+    // atualiza posiÃ§Ã£o da cÃ¢mera
     camera.Update();
 
-    // constrói a matriz de visualização
+    // constrÃ³i a matriz de visualizaÃ§Ã£o
     XMVECTOR pos = XMVectorSet(camera.x, camera.y, camera.z, 1.0f);
     XMVECTOR target = XMVectorZero();
     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
 
-    // carrega matriz de projeção
+    // carrega matriz de projeÃ§Ã£o
     XMMATRIX proj = XMLoadFloat4x4(&Proj);
 
     // modifica matriz de mundo da esfera
@@ -141,7 +141,7 @@ void Multiple::Update()
         // carrega matriz de mundo
         XMMATRIX world = XMLoadFloat4x4(&obj.world);      
 
-        // constrói matriz combinada
+        // constrÃ³i matriz combinada
         XMMATRIX WorldViewProj = world * view * proj;        
 
         // atualiza o buffer constante com a matriz combinada
@@ -155,29 +155,59 @@ void Multiple::Update()
 
 void Multiple::Draw()
 {
+	// obtÃ©m o tamanho da janela
+    float w = window->Width() / 2.0f;
+	float h = window->Height() / 2.0f;
+
+	// cria uma viewport para cada quadrante da janela
+    D3D12_VIEWPORT viewports[4] = {
+        { 0.0f, h, w, h, 0.0f, 1.0f}, //Front
+        {w, h, w, h, 0.0f, 1.0f}, //Side
+        {w, 0.0f, w, h, 0.0f, 1.0f},   //Top
+        {0.0f, 0.0f, w, h, 0.0f, 1.0f},    //Perspective
+    };
+
+	// cria uma scissor rect para cada quadrante da janela
+    D3D12_RECT scissors[4] = {
+        { 0,        (LONG)h, (LONG)w,       (LONG)(h * 2) }, //Front
+        { (LONG)w,  (LONG)h, (LONG)(w * 2), (LONG)(h * 2) }, //Side
+        { (LONG)w,  0,       (LONG)(w * 2), (LONG)h },       //Top
+        { 0,        0,       (LONG)w,       (LONG)h }        //Perspective
+    };
+
     // limpa o backbuffer
     graphics->Clear();
 
-    // comandos de configuração comuns a todos os objetos
+
+    // comandos de configuraÃ§Ã£o comuns a todos os objetos
     graphics->CommandList()->SetPipelineState(pipelineState);
     graphics->CommandList()->SetGraphicsRootSignature(rootSignature);
     graphics->CommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    
-    // desenha objetos da cena
-    for (auto& obj : scene)
-    {
-        // comandos de configuração específicos a cada objeto
-        graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
-        graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
-        graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
 
-        // desenha objeto
-        graphics->CommandList()->DrawIndexedInstanced(
-            obj.mesh->indexCount, 1,
-            obj.mesh->startIndex,
-            obj.mesh->baseVertex,
-            0);
+    for (int i = 0; i < 4; i++) {
+        graphics->CommandList()->RSSetViewports(1, &viewports[i]); // define as viewports
+        graphics->CommandList()->RSSetScissorRects(4, &scissors[i]); // define as scissor rects
+
+        // desenha objetos da cena
+        for (auto& obj : scene)
+        {
+            // comandos de configuraÃ§Ã£o especÃ­ficos a cada objeto
+            graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
+            graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
+            graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
+
+            // desenha objeto
+            graphics->CommandList()->DrawIndexedInstanced(
+                obj.mesh->indexCount, 1,
+                obj.mesh->startIndex,
+                obj.mesh->baseVertex,
+                0);
+        }
     }
+
+    
+    
+    
  
     // apresenta o backbuffer na tela
     graphics->Present();    
@@ -190,7 +220,7 @@ void Multiple::Finalize()
     // espera GPU finalizar comandos pendentes
     graphics->WaitForGpu();
 
-    // libera memória alocada
+    // libera memÃ³ria alocada
     rootSignature->Release();
     pipelineState->Release();
 
@@ -224,10 +254,10 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
         engine->window->LostFocus(Multiple::Pause);
         engine->window->InFocus(Multiple::Resume);
 
-        // cria e executa a aplicação
+        // cria e executa a aplicaÃ§Ã£o
         engine->Start(new Multiple());
 
-        // finaliza execução
+        // finaliza execuÃ§Ã£o
         delete engine;
     }
     catch (Error & e)
