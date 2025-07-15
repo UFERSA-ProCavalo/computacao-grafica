@@ -53,7 +53,8 @@ void Multiple::Init()
     boxObj.mesh = new Mesh(box);
     boxObj.vbuffer = new VertexBuffer<Vertex>(box);
     boxObj.ibuffer = new IndexBuffer<uint>(box);
-    boxObj.cbuffer = new ConstantBuffer<Constants>();
+    for (int i = 0; i < 4; ++i)
+        boxObj.cbuffer[i] = new ConstantBuffer<Constants>();
     scene.push_back(boxObj);
 
     // cylinder
@@ -64,7 +65,8 @@ void Multiple::Init()
     cylinderObj.mesh = new Mesh(cylinder);
     cylinderObj.vbuffer = new VertexBuffer<Vertex>(cylinder);
     cylinderObj.ibuffer = new IndexBuffer<uint>(cylinder);
-    cylinderObj.cbuffer = new ConstantBuffer<Constants>();
+    for (int i = 0; i < 4; ++i)
+        cylinderObj.cbuffer[i] = new ConstantBuffer<Constants>();
     scene.push_back(cylinderObj);
 
     // sphere
@@ -75,7 +77,8 @@ void Multiple::Init()
     sphereObj.mesh = new Mesh(sphere);
     sphereObj.vbuffer = new VertexBuffer<Vertex>(sphere);
     sphereObj.ibuffer = new IndexBuffer<uint>(sphere);
-    sphereObj.cbuffer = new ConstantBuffer<Constants>();
+    for (int i = 0; i < 4; ++i)
+        sphereObj.cbuffer[i] = new ConstantBuffer<Constants>();
     scene.push_back(sphereObj);
 
     // grid
@@ -85,7 +88,8 @@ void Multiple::Init()
         XMMatrixIdentity());
     gridObj.vbuffer = new VertexBuffer<Vertex>(grid);
     gridObj.ibuffer = new IndexBuffer<uint>(grid);
-    gridObj.cbuffer = new ConstantBuffer<Constants>();
+    for (int i = 0; i < 4; ++i)
+        gridObj.cbuffer[i] = new ConstantBuffer<Constants>();
     scene.push_back(gridObj);
  
     // ---------------------
@@ -194,59 +198,58 @@ void Multiple::Draw()
         switch (i)
         {
         case 0: // Front
-            XMVector posFront = XMVectorSet(0.0f, 0.0f, d, 1.0f); // posição da câmera
-            XMVector targetFront = XMVectorZero(); // alvo
-            XMVector upFront = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
+            XMVECTOR posFront = XMVectorSet(0.0f, 0.0f, d, 1.0f); // posição da câmera
+            XMVECTOR targetFront = XMVectorZero(); // alvo
+            XMVECTOR upFront = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
             view = XMMatrixLookAtLH(posFront, targetFront, upFront); // matriz de visualização
             proj = XMMatrixOrthographicLH(6.0f, 6.0f, 1.0f, 100.0f); // matriz de projeção ortográfica
             break;
 
         case 1: // Side
-            XMVector posSide = XMVectorSet(d, 0.0f, 0.0f, 1.0f); // posição da câmera
-            XMVector targetSide = XMVectorZero(); // alvo
-            XMVector upSide = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
+            XMVECTOR posSide = XMVectorSet(d, 0.0f, 0.0f, 1.0f); // posição da câmera
+            XMVECTOR targetSide = XMVectorZero(); // alvo
+            XMVECTOR upSide = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
             view = XMMatrixLookAtLH(posSide, targetSide, upSide); // matriz de visualização
             proj = XMMatrixOrthographicLH(6.0f, 6.0f, 1.0f, 100.0f); // matriz de projeção ortográfica
             break;
 
         case 2: // Top
-            XMVector posTop = XMVectorSet(0.0f, d, 0.0f, 1.0f); // posição da câmera
-            XMVector targetTop = XMVectorZero(); // alvo
-            XMVector upTop = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f); // vetor up
+            XMVECTOR posTop = XMVectorSet(0.0f, d, 0.0f, 1.0f); // posição da câmera
+            XMVECTOR targetTop = XMVectorZero(); // alvo
+            XMVECTOR upTop = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f); // vetor up
             view = XMMatrixLookAtLH(posTop, targetTop, upTop); // matriz de visualização
             proj = XMMatrixOrthographicLH(6.0f, 6.0f, 1.0f, 100.0f); // matriz de projeção ortográfica
             break;
 
         case 3: // Perspective
-            XMVector posPersp = XMVectorSet(camera.x, camera.y, camera.z, 1.0f); // posição da câmera
-            XMVector targetPersp = XMVectorZero(); // alvo
-            XMVector upPersp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
+            XMVECTOR posPersp = XMVectorSet(camera.x, camera.y, camera.z, 1.0f); // posição da câmera
+            XMVECTOR targetPersp = XMVectorZero(); // alvo
+            XMVECTOR upPersp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
             view = XMMatrixLookAtLH(posPersp, targetPersp, upPersp); // matriz de visualização
             proj = XMLoadFloat4x4(&Proj); // matriz de projeção perspectiva
             break;
         }
 
         for (auto& obj : scene) {
-			XMMatrix world = XMLoadFloat4x4(&obj.world);
-			XMMatrix WorldViewProj = world * view * proj;
+            XMMATRIX world = XMLoadFloat4x4(&obj.world);
+            XMMATRIX WorldViewProj = world * view * proj;
 
-			// atualiza o buffer constante com a matriz combinada
-			Constants constants;
+            // atualiza o buffer constante com a matriz combinada
+            Constants constants;
+            XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
+            obj.cbuffer[i]->Copy(&constants);
 
-			XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
-			obj.cbuffer->Copy(&constants);
-			// comandos de configuração específicos a cada objeto
-			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
-			graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
-			graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
-			// desenha objeto
-			graphics->CommandList()->DrawIndexedInstanced(
-				obj.mesh->indexCount, 1,
-				obj.mesh->startIndex,
-				obj.mesh->baseVertex,
-				0);
+            // comandos de configuração específicos a cada objeto
+            graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer[i]->View());
+            graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
+            graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
+            // desenha objeto
+            graphics->CommandList()->DrawIndexedInstanced(
+                obj.mesh->indexCount, 1,
+                obj.mesh->startIndex,
+                obj.mesh->baseVertex,
+                0);
         }
-
         //// desenha objetos da cena
         //for (auto& obj : scene)
         //{
@@ -288,7 +291,8 @@ void Multiple::Finalize()
         delete obj.mesh;
         delete obj.vbuffer;
         delete obj.ibuffer;
-        delete obj.cbuffer;
+        for (int i = 0; i < 4; ++i)
+            delete obj.cbuffer[i];
     }
 }
 

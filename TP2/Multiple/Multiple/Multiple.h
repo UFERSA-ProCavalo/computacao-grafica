@@ -1,11 +1,11 @@
 /**********************************************************************************
-// Multiple (Arquivo de Cabeçalho)
+// Multiple (Arquivo de CabeÃ§alho)
 //
-// Criação:     27 Abr 2016
-// Atualização: 22 Jun 2025
+// CriaÃ§Ã£o:     27 Abr 2016
+// AtualizaÃ§Ã£o: 22 Jun 2025
 // Compilador:  Visual C++ 2022
 //
-// Descrição:   Cena 3D usando múltiplos buffers, um por objeto
+// DescriÃ§Ã£o:   Cena 3D usando mÃºltiplos buffers, um por objeto
 //
 **********************************************************************************/
 
@@ -33,7 +33,7 @@ struct Object
     Mesh* mesh = nullptr;
     VertexBuffer<Vertex>* vbuffer = nullptr;
     IndexBuffer<uint>* ibuffer = nullptr;
-    ConstantBuffer<Constants>* cbuffer = nullptr;
+	ConstantBuffer<Constants>* cbuffer[4] = { nullptr, nullptr, nullptr, nullptr }; // um buffer por viewport
 };
 
 // ------------------------------------------------------------------------------
