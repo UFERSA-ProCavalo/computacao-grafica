@@ -135,20 +135,20 @@ void Multiple::Update()
         XMMatrixRotationY(float(timer.Elapsed())) *
         XMMatrixTranslation(0.0f, 0.5f, 0.0f));
 
-    // ajusta o constant buffer de cada objeto
-    for (auto & obj : scene)
-    {
-        // carrega matriz de mundo
-        XMMATRIX world = XMLoadFloat4x4(&obj.world);      
+    //// ajusta o constant buffer de cada objeto
+    //for (auto & obj : scene)
+    //{
+    //    // carrega matriz de mundo
+    //    XMMATRIX world = XMLoadFloat4x4(&obj.world);      
 
-        // constrói matriz combinada
-        XMMATRIX WorldViewProj = world * view * proj;        
+    //    // constrói matriz combinada
+    //    XMMATRIX WorldViewProj = world * view * proj;        
 
-        // atualiza o buffer constante com a matriz combinada
-        Constants constants;
-        XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
-        obj.cbuffer->Copy(&constants);
-    }
+    //    // atualiza o buffer constante com a matriz combinada
+    //    Constants constants;
+    //    XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
+    //    obj.cbuffer->Copy(&constants);
+    //}
 }
 
 // ------------------------------------------------------------------------------
@@ -178,31 +178,90 @@ void Multiple::Draw()
     // limpa o backbuffer
     graphics->Clear();
 
-
     // comandos de configuração comuns a todos os objetos
     graphics->CommandList()->SetPipelineState(pipelineState);
     graphics->CommandList()->SetGraphicsRootSignature(rootSignature);
     graphics->CommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	float d = 5.0f; // distância da câmera
+
     for (int i = 0; i < 4; i++) {
         graphics->CommandList()->RSSetViewports(1, &viewports[i]); // define as viewports
         graphics->CommandList()->RSSetScissorRects(4, &scissors[i]); // define as scissor rects
 
-        // desenha objetos da cena
-        for (auto& obj : scene)
+        XMMATRIX view, proj;
+		// ajusta a matriz de visualização e projeção para cada viewport
+        switch (i)
         {
-            // comandos de configuração específicos a cada objeto
-            graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
-            graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
-            graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
+        case 0: // Front
+            XMVector posFront = XMVectorSet(0.0f, 0.0f, d, 1.0f); // posição da câmera
+            XMVector targetFront = XMVectorZero(); // alvo
+            XMVector upFront = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
+            view = XMMatrixLookAtLH(posFront, targetFront, upFront); // matriz de visualização
+            proj = XMMatrixOrthographicLH(6.0f, 6.0f, 1.0f, 100.0f); // matriz de projeção ortográfica
+            break;
 
-            // desenha objeto
-            graphics->CommandList()->DrawIndexedInstanced(
-                obj.mesh->indexCount, 1,
-                obj.mesh->startIndex,
-                obj.mesh->baseVertex,
-                0);
+        case 1: // Side
+            XMVector posSide = XMVectorSet(d, 0.0f, 0.0f, 1.0f); // posição da câmera
+            XMVector targetSide = XMVectorZero(); // alvo
+            XMVector upSide = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
+            view = XMMatrixLookAtLH(posSide, targetSide, upSide); // matriz de visualização
+            proj = XMMatrixOrthographicLH(6.0f, 6.0f, 1.0f, 100.0f); // matriz de projeção ortográfica
+            break;
+
+        case 2: // Top
+            XMVector posTop = XMVectorSet(0.0f, d, 0.0f, 1.0f); // posição da câmera
+            XMVector targetTop = XMVectorZero(); // alvo
+            XMVector upTop = XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f); // vetor up
+            view = XMMatrixLookAtLH(posTop, targetTop, upTop); // matriz de visualização
+            proj = XMMatrixOrthographicLH(6.0f, 6.0f, 1.0f, 100.0f); // matriz de projeção ortográfica
+            break;
+
+        case 3: // Perspective
+            XMVector posPersp = XMVectorSet(camera.x, camera.y, camera.z, 1.0f); // posição da câmera
+            XMVector targetPersp = XMVectorZero(); // alvo
+            XMVector upPersp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // vetor up
+            view = XMMatrixLookAtLH(posPersp, targetPersp, upPersp); // matriz de visualização
+            proj = XMLoadFloat4x4(&Proj); // matriz de projeção perspectiva
+            break;
         }
+
+        for (auto& obj : scene) {
+			XMMatrix world = XMLoadFloat4x4(&obj.world);
+			XMMatrix WorldViewProj = world * view * proj;
+
+			// atualiza o buffer constante com a matriz combinada
+			Constants constants;
+
+			XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
+			obj.cbuffer->Copy(&constants);
+			// comandos de configuração específicos a cada objeto
+			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
+			graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
+			graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
+			// desenha objeto
+			graphics->CommandList()->DrawIndexedInstanced(
+				obj.mesh->indexCount, 1,
+				obj.mesh->startIndex,
+				obj.mesh->baseVertex,
+				0);
+        }
+
+        //// desenha objetos da cena
+        //for (auto& obj : scene)
+        //{
+        //    // comandos de configuração específicos a cada objeto
+        //    graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
+        //    graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
+        //    graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
+
+        //    // desenha objeto
+        //    graphics->CommandList()->DrawIndexedInstanced(
+        //        obj.mesh->indexCount, 1,
+        //        obj.mesh->startIndex,
+        //        obj.mesh->baseVertex,
+        //        0);
+        //}
     }
 
     

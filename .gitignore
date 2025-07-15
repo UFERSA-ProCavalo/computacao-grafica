@@ -1,7 +1,7 @@
 *.log
 *.tmp
 *.bak
-
-
+.vs/
+Shaders/
 stuff/
 Debug/
