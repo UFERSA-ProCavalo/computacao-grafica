@@ -64,35 +64,32 @@ Construa uma aplicação gráfica que permita ao usuário visualizar e editar um
 
 ### Tarefas
 
-- [ ] Implementar modo de visualização em 4 vistas (Front, Top, Right, Perspective)
-    - [ ] Calcular largura e altura de cada quadrante com base no tamanho da janela
-    - [ ] Definir quatro viewports (D3D12_VIEWPORT), um para cada quadrante
-    - [ ] Definir quatro scissor rects (D3D12_RECT), um para cada quadrante
-    - [ ] Refatorar o loop de desenho para iterar sobre os quatro viewports
-    - [ ] Em cada iteração:
-        - [ ] Setar o viewport correspondente
-        - [ ] Setar o scissor rect correspondente
-        - [ ] Definir a câmera correta para a vista:
-            - [ ] Perspective (câmera orbital, topo esquerdo)
-            - [ ] Top (visão de cima, topo direito)
-            - [ ] Front (visão frontal, baixo esquerdo)
-            - [ ] Right (visão lateral direita, baixo direito)
-        - [ ] Atualizar a matriz de visualização/projeção para cada vista
-        - [ ] Atualizar o constant buffer de cada objeto para cada viewport
-        - [ ] Renderizar todos os objetos da cena
-    - [ ] Permitir alternar entre modo de uma vista e modo de quatro vistas
-    - [ ] Testar se cada quadrante está desenhando corretamente e sem vazamento
+- [x] Implementar modo de visualização em 4 vistas (Front, Top, Right, Perspective)
+    - [x] Calcular largura e altura de cada quadrante com base no tamanho da janela
+    - [x] Definir quatro viewports (D3D12_VIEWPORT), um para cada quadrante
+    - [x] Definir quatro scissor rects (D3D12_RECT), um para cada quadrante
+    - [x] Refatorar o loop de desenho para iterar sobre os quatro viewports
+    - [x] Em cada iteração:
+        - [x] Setar o viewport correspondente
+        - [x] Setar o scissor rect correspondente
+        - [x] Definir a câmera correta para a vista:
+            - [x] Perspective (câmera orbital, topo esquerdo)
+            - [x] Top (visão de cima, topo direito)
+            - [x] Front (visão frontal, baixo esquerdo)
+            - [x] Right (visão lateral direita, baixo direito)
+        - [x] Atualizar a matriz de visualização/projeção para cada vista
+        - [x] Atualizar o constant buffer de cada objeto para cada viewport
+        - [x] Renderizar todos os objetos da cena
+    - [x] Permitir alternar entre modo de uma vista e modo de quatro vistas
+    - [x] Testar se cada quadrante está desenhando corretamente e sem vazamento
 
-- [ ] Adicionar linhas divisórias entre as vistas para melhor separação visual
-    - [ ] Calcular as posições das linhas divisórias com base no tamanho da janela
-    - [ ] Desenhar linhas verticais e horizontais entre os quadrantes após renderizar as cenas
-    - [ ] Garantir que as linhas fiquem sempre visíveis, independente do conteúdo das vistas
+- [x] Adicionar linhas divisórias entre as vistas para melhor separação visual
 
-- [ ] Carregar modelos 3D de arquivos OBJ
-    - [ ] Implementar parser simples para arquivos OBJ
-    - [ ] Adicionar carregamento de modelo OBJ via atalho
-    - [ ] Adicionar modelo carregado à cena como novo objeto
-    - [ ] Testar carregamento com diferentes arquivos OBJ
+- [x] Carregar modelos 3D de arquivos OBJ
+    - [x] Implementar parser simples para arquivos OBJ
+    - [x] Adicionar carregamento de modelo OBJ via atalho (teclas 1-5)
+    - [x] Adicionar modelo carregado à cena como novo objeto
+    - [x] Testar carregamento com diferentes arquivos OBJ
 
 - [x] Permitir adição, exclusão e seleção de objetos na cena (teclado)
     - [x] Implementar lógica para adicionar objetos (primitivas)
@@ -109,10 +106,10 @@ Construa uma aplicação gráfica que permita ao usuário visualizar e editar um
 
 ### Opcional
 
-- [x] (Opcional) Saída de debug no console (eventos de seleção, inserção, remoção)
-- [ ] (Opcional) Implementar seleção de objetos via clique do mouse (picking)
-- [ ] (Opcional) Usar scissor rects para garantir que cada viewport desenhe apenas dentro do seu quadrante, evitando vazamento de desenho
-- [ ] (Opcional) Permitir redimensionamento dinâmico das viewports conforme o tamanho da janela
+- [x] Saída de debug no console (eventos de seleção, inserção, remoção)
+- [ ] Usar scissor rects para garantir que cada viewport desenhe apenas dentro do seu quadrante, evitando vazamento de desenho
+- [ ] Implementar seleção de objetos via clique do mouse (picking)
+- [ ] Permitir redimensionamento dinâmico das viewports conforme o tamanho da janela
 
 </details>
 

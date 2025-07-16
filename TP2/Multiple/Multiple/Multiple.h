@@ -66,11 +66,19 @@ private:
     bool isSpinning = true;
     bool isChanged = false;
     bool isAltMode = false;
+    bool isRotating = false;
+    bool isZooming = false;
 
     std::vector<Object> scene;
     int selectedIndex = -1; // Index do objeto selecionado, -1 = cena vazia
 
-    // Retorna verde o selectedIndex for válido
+    // Lista de objetos pendentes para remoção
+    // Usada para evitar remoção imediata durante o loop de atualização
+    // Pois eu estava tendo problema de iteração com a lista de objetos e objetos removidos
+    std::vector<Object> pendingDeletion;
+    int deletionDelay = 0;
+
+    // Retorna verdadeiro se selectedIndex for válido
     bool hasValidSelection() const {
         return selectedIndex >= 0 && selectedIndex < (int)scene.size();
     }
@@ -78,12 +86,19 @@ private:
     Object gridObj; // Grid da cena
     ConstantBuffer<Constants>* gridCBuffer[4] = { nullptr, nullptr, nullptr, nullptr }; // 4 viewports
 
+    // Linhas de separação para modo alternativo
+    struct LineVertex {
+        XMFLOAT3 position;
+        XMFLOAT4 color;
+    };
+    VertexBuffer<LineVertex>* lineVBuffer = nullptr;
+    ConstantBuffer<Constants>* lineCBuffer = nullptr;
+
 public:
     void Init();
     void Update();
 	void Draw();
 	void Finalize();
-
     static void Pause()  { timer.Stop();  }
     static void Resume() { timer.Start(); }
 
