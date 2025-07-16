@@ -48,7 +48,7 @@ struct Object
     Mesh* mesh = nullptr;
     VertexBuffer<Vertex>* vbuffer = nullptr;
     IndexBuffer<uint>* ibuffer = nullptr;
-    ConstantBuffer<Constants>* cbuffer = nullptr;
+    ConstantBuffer<Constants>* cbuffer[4] = { nullptr, nullptr, nullptr, nullptr };
 };
 // ------------------------------------------------------------------------------
 
@@ -76,12 +76,13 @@ private:
     }
 
     Object gridObj; // Grid da cena
+    ConstantBuffer<Constants>* gridCBuffer[4] = { nullptr, nullptr, nullptr, nullptr }; // 4 viewports
 
 public:
     void Init();
     void Update();
-    void Draw();
-    void Finalize();
+	void Draw();
+	void Finalize();
 
     static void Pause()  { timer.Stop();  }
     static void Resume() { timer.Start(); }

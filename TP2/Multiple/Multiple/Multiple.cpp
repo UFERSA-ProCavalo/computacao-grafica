@@ -62,7 +62,8 @@ void Multiple::Init()
 	boxObj.vbuffer = new VertexBuffer<Vertex>(box);
 	boxObj.ibuffer = new IndexBuffer<uint>(box);
 
-	boxObj.cbuffer = new ConstantBuffer<Constants>();
+	for (int i = 0; i < 4; ++i)
+		boxObj.cbuffer[i] = new ConstantBuffer<Constants>();
 	scene.push_back(boxObj);
 
 	// cylinder
@@ -77,13 +78,15 @@ void Multiple::Init()
 	cylinderObj.vbuffer = new VertexBuffer<Vertex>(cylinder);
 	cylinderObj.ibuffer = new IndexBuffer<uint>(cylinder);
 
-	cylinderObj.cbuffer = new ConstantBuffer<Constants>();
+	for (int i = 0; i < 4; ++i)
+		cylinderObj.cbuffer[i] = new ConstantBuffer<Constants>();
 	scene.push_back(cylinderObj);
 
 	// sphere
 	Object sphereObj;
 	sphereObj.posicao = XMFLOAT3(0.0f, 0.5f, 0.0f);
 	sphereObj.escala = XMFLOAT3(0.5f, 0.5f, 0.5f);
+	sphereObj.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f); // Yellow
 	XMStoreFloat4x4(&sphereObj.world,
 		XMMatrixScaling(0.5f, 0.5f, 0.5f) *
 		XMMatrixTranslation(0.0f, 0.5f, 0.0f));
@@ -91,7 +94,8 @@ void Multiple::Init()
 	sphereObj.vbuffer = new VertexBuffer<Vertex>(sphere);
 	sphereObj.ibuffer = new IndexBuffer<uint>(sphere);
 
-	sphereObj.cbuffer = new ConstantBuffer<Constants>();
+	for (int i = 0; i < 4; ++i)
+		sphereObj.cbuffer[i] = new ConstantBuffer<Constants>();
 	scene.push_back(sphereObj);
 
 	// grid da cena (não selecionável ou removível)
@@ -100,7 +104,8 @@ void Multiple::Init()
 	XMStoreFloat4x4(&gridObj.world, XMMatrixIdentity());
 	gridObj.vbuffer = new VertexBuffer<Vertex>(grid);
 	gridObj.ibuffer = new IndexBuffer<uint>(grid);
-	gridObj.cbuffer = new ConstantBuffer<Constants>();
+	for (int i = 0; i < 4; ++i)
+		gridCBuffer[i] = new ConstantBuffer<Constants>();
 
 	// Pensando o que fazer com a grid
 	//scene.push_back(gridObj);
@@ -210,7 +215,8 @@ void Multiple::Update()
 		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());		obj.mesh = new Mesh(box);
 		obj.vbuffer = new VertexBuffer<Vertex>(box);
 		obj.ibuffer = new IndexBuffer<uint>(box);
-		obj.cbuffer = new ConstantBuffer<Constants>();
+		for (int i = 0; i < 4; ++i)
+			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
@@ -224,7 +230,8 @@ void Multiple::Update()
 		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());		obj.mesh = new Mesh(cylinder);
 		obj.vbuffer = new VertexBuffer<Vertex>(cylinder);
 		obj.ibuffer = new IndexBuffer<uint>(cylinder);
-		obj.cbuffer = new ConstantBuffer<Constants>();
+		for (int i = 0; i < 4; ++i)
+			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
@@ -238,7 +245,8 @@ void Multiple::Update()
 		obj.mesh = new Mesh(sphere);
 		obj.vbuffer = new VertexBuffer<Vertex>(sphere);
 		obj.ibuffer = new IndexBuffer<uint>(sphere);
-		obj.cbuffer = new ConstantBuffer<Constants>();
+		for (int i = 0; i < 4; ++i)
+			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
@@ -252,7 +260,8 @@ void Multiple::Update()
 		obj.mesh = new Mesh(geosphere);
 		obj.vbuffer = new VertexBuffer<Vertex>(geosphere);
 		obj.ibuffer = new IndexBuffer<uint>(geosphere);
-		obj.cbuffer = new ConstantBuffer<Constants>();
+		for (int i = 0; i < 4; ++i)
+			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
@@ -266,7 +275,8 @@ void Multiple::Update()
 		obj.mesh = new Mesh(plane);
 		obj.vbuffer = new VertexBuffer<Vertex>(plane);
 		obj.ibuffer = new IndexBuffer<uint>(plane);
-		obj.cbuffer = new ConstantBuffer<Constants>();
+		for (int i = 0; i < 4; ++i)
+			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
@@ -281,7 +291,8 @@ void Multiple::Update()
 		obj.mesh = new Mesh(quad);
 		obj.vbuffer = new VertexBuffer<Vertex>(quad);
 		obj.ibuffer = new IndexBuffer<uint>(quad);
-		obj.cbuffer = new ConstantBuffer<Constants>();
+		for (int i = 0; i < 4; ++i)
+			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
@@ -312,7 +323,8 @@ void Multiple::Update()
 		delete scene[selectedIndex].mesh;
 		delete scene[selectedIndex].vbuffer;
 		delete scene[selectedIndex].ibuffer;
-		delete scene[selectedIndex].cbuffer;
+		for (int i = 0; i < 4; ++i)
+			delete scene[selectedIndex].cbuffer[i];
 		scene.erase(scene.begin() + selectedIndex);
 		// Ajusta o índice selecionado
 		if (scene.empty())
@@ -411,10 +423,11 @@ void Multiple::Draw()
 			world = XMLoadFloat4x4(&gridObj.world);
 			WorldViewProj = world * view * proj;
 			XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
-			gridObj.cbuffer->Copy(&constants);
+			constants.color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); // Gray
+			gridCBuffer[i]->Copy(&constants);
 
 			// Desenha a grid fixa por viewport
-			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, gridObj.cbuffer->View());
+			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, gridCBuffer[i]->View());
 			graphics->CommandList()->IASetVertexBuffers(0, 1, gridObj.vbuffer->View());
 			graphics->CommandList()->IASetIndexBuffer(gridObj.ibuffer->View());
 			graphics->CommandList()->DrawIndexedInstanced(
@@ -435,10 +448,9 @@ void Multiple::Draw()
 					constants.color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
 				else
 					constants.color = obj.color;
-				obj.cbuffer->Copy(&constants);
+				obj.cbuffer[i]->Copy(&constants);
 
-
-				graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
+				graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer[i]->View());
 				graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
 				graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
 				graphics->CommandList()->DrawIndexedInstanced(
@@ -447,8 +459,7 @@ void Multiple::Draw()
 					obj.mesh->baseVertex,
 					0);
 			}
-		}
-	}
+		}	}
 	else
 	{
 		XMVECTOR posPersp = XMVectorSet(camera.x, camera.y, camera.z, 1.0f);
@@ -460,10 +471,10 @@ void Multiple::Draw()
 		world = XMLoadFloat4x4(&gridObj.world);
 		WorldViewProj = world * view * proj;
 		XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
-		gridObj.cbuffer->Copy(&constants);
+		gridCBuffer[3]->Copy(&constants);
 
 		// Desenha a grid fixa por viewport
-		graphics->CommandList()->SetGraphicsRootConstantBufferView(0, gridObj.cbuffer->View());
+		graphics->CommandList()->SetGraphicsRootConstantBufferView(0, gridCBuffer[3]->View());
 		graphics->CommandList()->IASetVertexBuffers(0, 1, gridObj.vbuffer->View());
 		graphics->CommandList()->IASetIndexBuffer(gridObj.ibuffer->View());
 		graphics->CommandList()->DrawIndexedInstanced(
@@ -484,10 +495,9 @@ void Multiple::Draw()
 				constants.color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
 			else
 				constants.color = obj.color;
-			obj.cbuffer->Copy(&constants);
+			obj.cbuffer[3]->Copy(&constants);
 
-
-			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer->View());
+			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer[3]->View());
 			graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
 			graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
 			graphics->CommandList()->DrawIndexedInstanced(
@@ -496,6 +506,7 @@ void Multiple::Draw()
 				obj.mesh->baseVertex,
 				0);
 		}
+
 	}
 	// apresenta o backbuffer na tela
 	graphics->Present();
@@ -518,13 +529,15 @@ void Multiple::Finalize()
 		delete obj.mesh;
 		delete obj.vbuffer;
 		delete obj.ibuffer;
-		delete obj.cbuffer;
+		for (int i = 0; i < 4; ++i)
+        delete obj.cbuffer[i];
 	}
 	// Libera recursos do grid
 	delete gridObj.mesh;
 	delete gridObj.vbuffer;
 	delete gridObj.ibuffer;
-	delete gridObj.cbuffer;
+	for (int i = 0; i < 4; ++i)
+    delete gridCBuffer[i];
 }
 
 // ------------------------------------------------------------------------------
