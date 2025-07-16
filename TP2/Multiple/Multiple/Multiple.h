@@ -15,7 +15,7 @@
 const float GRID_MIN_X = -1.0f;
 const float GRID_MAX_X =  1.0f;
 const float GRID_MIN_Y =  0.0f;
-const float GRID_MAX_Y =  1.0f;
+const float GRID_MAX_Y =  5.0f;
 const float GRID_MIN_Z = -1.0f;
 const float GRID_MAX_Z =  1.0f;
 
@@ -34,9 +34,9 @@ struct Constants
 struct Object
 {
     // Parâmetros de transformação
-    XMFLOAT3 posicao = {0.0f, 0.0f, 0.0f}; // posição
-    XMFLOAT3 escala = {1.0f, 1.0f, 1.0f};  // escala
-    XMFLOAT3 rotacao = {0.0f, 0.0f, 0.0f}; // rotação (Euler XYZ, em radianos)
+    XMFLOAT3 pos = {0.0f, 0.0f, 0.0f}; // posição
+    XMFLOAT3 scale = {1.0f, 1.0f, 1.0f};  // escala
+    XMFLOAT3 rot = {0.0f, 0.0f, 0.0f}; // rotação (Euler XYZ, em radianos)
     XMFLOAT4 color = {255, 255, 255, 1.0f};// cor
 
     XMFLOAT4X4 world = {
