@@ -10,9 +10,16 @@
 **********************************************************************************/
 
 #include "DXUT.h"
+// ------------------------------------------------------------------------------
+// Limites do grid para manter objetos dentro da cena
+const float GRID_MIN_X = -1.0f;
+const float GRID_MAX_X =  1.0f;
+const float GRID_MIN_Y =  0.0f;
+const float GRID_MAX_Y =  1.0f;
+const float GRID_MIN_Z = -1.0f;
+const float GRID_MAX_Z =  1.0f;
 
 // ------------------------------------------------------------------------------
-
 struct Constants
 {
     XMFLOAT4X4 WorldViewProj =
@@ -20,10 +27,18 @@ struct Constants
       0.0f, 1.0f, 0.0f, 0.0f,
       0.0f, 0.0f, 1.0f, 0.0f,
       0.0f, 0.0f, 0.0f, 1.0f };
+
+    XMFLOAT4 color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // cor do objeto
 };
 
 struct Object
 {
+    // Parâmetros de transformação
+    XMFLOAT3 posicao = {0.0f, 0.0f, 0.0f}; // posição
+    XMFLOAT3 escala = {1.0f, 1.0f, 1.0f};  // escala
+    XMFLOAT3 rotacao = {0.0f, 0.0f, 0.0f}; // rotação (Euler XYZ, em radianos)
+    XMFLOAT4 color = {255, 255, 255, 1.0f};// cor
+
     XMFLOAT4X4 world = {
         1.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 0.0f,
@@ -33,9 +48,8 @@ struct Object
     Mesh* mesh = nullptr;
     VertexBuffer<Vertex>* vbuffer = nullptr;
     IndexBuffer<uint>* ibuffer = nullptr;
-	ConstantBuffer<Constants>* cbuffer[4] = { nullptr, nullptr, nullptr, nullptr }; // um buffer por viewport
+    ConstantBuffer<Constants>* cbuffer = nullptr;
 };
-
 // ------------------------------------------------------------------------------
 
 class Multiple : public App
@@ -47,9 +61,21 @@ private:
     OrbitCamera camera;
     XMFLOAT4X4 Proj;
     static Timer timer;
-    bool spinning = true;
-    
-    vector<Object> scene;
+
+    //ESTADOS
+    bool isSpinning = true;
+    bool isChanged = false;
+    bool isAltMode = false;
+
+    std::vector<Object> scene;
+    int selectedIndex = -1; // Index do objeto selecionado, -1 = cena vazia
+
+    // Retorna verde o selectedIndex for válido
+    bool hasValidSelection() const {
+        return selectedIndex >= 0 && selectedIndex < (int)scene.size();
+    }
+
+    Object gridObj; // Grid da cena
 
 public:
     void Init();

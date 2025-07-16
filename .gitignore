@@ -1,6 +1,7 @@
 *.log
 *.tmp
 *.bak
+x64/
 .vs/
 Shaders/
 stuff/

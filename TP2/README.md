@@ -23,14 +23,14 @@ O formato de arquivo OBJ é um dos formatos de arquivos comumente utilizados par
 Construa uma aplicação gráfica que permita ao usuário visualizar e editar uma cena 3D formada a partir das geometrias Box, Cylinder, Sphere, GeoSphere, Grid, Quad e também geometrias carregadas a partir de arquivos OBJ.
 
 ### Tabela 1 — Teclas para criar figuras:
-| Tecla | Figura    |
-|-------|-----------|
-| B     | Box       |
-| C     | Cylinder  |
-| S     | Sphere    |
-| G     | GeoSphere |
-| P     | Plane     |
-| Q     | Quad      |
+| Tecla | Figura     |
+|-------|------------|
+| B     | Box        |
+| C     | Cylinder   |
+| S     | Sphere     |
+| G     | GeoSphere  |
+| P     | Plane(Grid)|
+| Q     | Quad       |
 
 ### Tabela 2 — Teclas para ações:
 | Tecla   | Ação                        |
@@ -46,6 +46,7 @@ Construa uma aplicação gráfica que permita ao usuário visualizar e editar um
 - Exceto a perspectiva, as outras vistas usam projeção ortográfica.
 - Apenas a câmera da perspectiva é interativa (gira/zoom com mouse).
 - Teclas 1 a 5 carregam modelos de teste: Ball, Capsule, House, Monkey, Thorus.
+- O grid da cena é sempre exibido, não pode ser selecionado ou removido.
 
 #### Critérios de avaliação:
 - Modo de visualização em 4 vistas
@@ -88,23 +89,30 @@ Construa uma aplicação gráfica que permita ao usuário visualizar e editar um
     - [ ] Garantir que as linhas fiquem sempre visíveis, independente do conteúdo das vistas
 
 - [ ] Carregar modelos 3D de arquivos OBJ
-    - [ ] Implementar parser simples para arquivos OBJ (sem bibliotecas externas)
-    - [ ] Adicionar opção de carregar modelo OBJ via interface ou comando
+    - [ ] Implementar parser simples para arquivos OBJ
+    - [ ] Adicionar carregamento de modelo OBJ via atalho
     - [ ] Adicionar modelo carregado à cena como novo objeto
     - [ ] Testar carregamento com diferentes arquivos OBJ
 
-- [ ] Permitir adição, exclusão e seleção de objetos na cena
-    - [ ] Implementar lógica para adicionar objetos (primitivas ou modelos OBJ)
-    - [ ] Implementar lógica para remover objetos selecionados
-    - [ ] Implementar seleção de objetos via clique do mouse (picking)
-    - [ ] Destacar visualmente o objeto selecionado
+- [x] Permitir adição, exclusão e seleção de objetos na cena (teclado)
+    - [x] Implementar lógica para adicionar objetos (primitivas)
+    - [x] Implementar lógica para remover objetos selecionados
+    - [x] Implementar seleção de objetos via TAB
+    - [x] Destacar visualmente o objeto selecionado
 
-- [ ] Implementar translação, escala e rotação de objetos selecionados
-    - [ ] Implementar manipulação de translação via teclado/mouse
-    - [ ] Implementar manipulação de escala via teclado/mouse
-    - [ ] Implementar manipulação de rotação via teclado/mouse
-    - [ ] Atualizar matriz de transformação do objeto selecionado em tempo real
-    - [ ] Garantir que apenas o objeto selecionado seja transformado
+- [x] Implementar translação, escala e rotação de objetos selecionados
+    - [x] Implementar manipulação de translação via teclado
+    - [x] Implementar manipulação de escala via teclado
+    - [x] Implementar manipulação de rotação via teclado
+    - [x] Atualizar matriz de transformação do objeto selecionado em tempo real
+    - [x] Garantir que apenas o objeto selecionado seja transformado
+
+### Opcional
+
+- [x] (Opcional) Saída de debug no console (eventos de seleção, inserção, remoção)
+- [ ] (Opcional) Implementar seleção de objetos via clique do mouse (picking)
+- [ ] (Opcional) Usar scissor rects para garantir que cada viewport desenhe apenas dentro do seu quadrante, evitando vazamento de desenho
+- [ ] (Opcional) Permitir redimensionamento dinâmico das viewports conforme o tamanho da janela
 
 </details>
 
@@ -113,12 +121,17 @@ Construa uma aplicação gráfica que permita ao usuário visualizar e editar um
 <details>
 <summary><strong>Ideias de Melhoria</strong></summary>
 
-- [ ] Usar scissor rects para garantir que cada viewport desenhe apenas dentro do seu quadrante, evitando vazamento de desenho
-- [ ] Adicionar labels/texto em cada quadrante para indicar a vista (ex: “Top”, “Front”, etc.)
-- [ ] Permitir redimensionamento dinâmico das viewports conforme o tamanho da janela
-- [ ] Refatorar o código para facilitar a manutenção e futuras expansões
+
 
 </details>
+
+---
+
+## Observações sobre Debug Console
+
+- O programa pode exibir mensagens de debug no console (opcional), mostrando eventos como seleção, inserção e remoção de objetos.
+- Para ativar/desativar, ajuste o código em WinMain e Update conforme desejado.
+- O grid da cena é sempre exibido, não pode ser selecionado ou removido.
 
 ---
 
