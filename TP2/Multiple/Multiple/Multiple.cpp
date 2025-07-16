@@ -16,10 +16,20 @@
 #include<algorithm>
 #include <fstream>
 
+
+
 // ------------------------------------------------------------------------------
 
-#include <fstream>
-
+// Atualiza a cor de todos os vértices do objeto
+void SetObjectVertexColor(Object& obj, const XMFLOAT4& color) {
+	if (!obj.vbuffer || obj.originalVertices.empty()) return;
+	size_t vertexCount = obj.originalVertices.size();
+	std::vector<Vertex> tempVertices = obj.originalVertices;
+	for (size_t i = 0; i < vertexCount; ++i) {
+		tempVertices[i].color = color;
+	}
+	obj.vbuffer->Copy(tempVertices.data(), (uint)vertexCount);
+}
 
 void LoadObj(const std::string& path, std::vector<XMFLOAT3>& vertices, std::vector<uint32_t>& indices) {
 	std::ifstream file(path);
@@ -93,10 +103,10 @@ void Multiple::Init()
 	lineCBuffer = new ConstantBuffer<Constants>();
 	lineCBuffer->Copy(&lineConstants);
 
-	Box box(2.0f, 2.0f, 2.0f, Orange);
-	Cylinder cylinder(1.0f, 0.5f, 3.0f, 20, 20, Yellow);
-	Sphere sphere(1.0f, 20, 20, Crimson);
-	Grid grid(3.0f, 3.0f, 20, 20, Gray);
+	Box box(2.0f, 2.0f, 2.0f, White);
+	Cylinder cylinder(1.0f, 0.5f, 3.0f, 20, 20, White);
+	Sphere sphere(1.0f, 20, 20, White);
+	Grid grid(3.0f, 3.0f, 20, 20, White);
 
 	// -------------------------
 	// Definição dos Objetos 3D
@@ -106,7 +116,7 @@ void Multiple::Init()
 	Object boxObj;
 	boxObj.posicao = XMFLOAT3(-1.0f, 0.41f, 1.0f);
 	boxObj.escala = XMFLOAT3(0.4f, 0.4f, 0.4f);
-	boxObj.color = XMFLOAT4(1.0f, 0.55f, 0.0f, 1.0f); // Orange
+	boxObj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
 
 	XMStoreFloat4x4(&boxObj.world,
 		XMMatrixScaling(0.4f, 0.4f, 0.4f) *
@@ -114,6 +124,7 @@ void Multiple::Init()
 	boxObj.mesh = new Mesh(box);
 	boxObj.vbuffer = new VertexBuffer<Vertex>(box);
 	boxObj.ibuffer = new IndexBuffer<uint>(box);
+	boxObj.originalVertices = box.vertices;
 
 	for (int i = 0; i < 4; ++i)
 		boxObj.cbuffer[i] = new ConstantBuffer<Constants>();
@@ -123,13 +134,14 @@ void Multiple::Init()
 	Object cylinderObj;
 	cylinderObj.posicao = XMFLOAT3(1.0f, 0.75f, -1.0f);
 	cylinderObj.escala = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	cylinderObj.color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f); // Yellow
+	cylinderObj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
 	XMStoreFloat4x4(&cylinderObj.world,
 		XMMatrixScaling(0.5f, 0.5f, 0.5f) *
 		XMMatrixTranslation(1.0f, 0.75f, -1.0f));
 	cylinderObj.mesh = new Mesh(cylinder);
 	cylinderObj.vbuffer = new VertexBuffer<Vertex>(cylinder);
 	cylinderObj.ibuffer = new IndexBuffer<uint>(cylinder);
+	cylinderObj.originalVertices = cylinder.vertices;
 
 	for (int i = 0; i < 4; ++i)
 		cylinderObj.cbuffer[i] = new ConstantBuffer<Constants>();
@@ -139,13 +151,14 @@ void Multiple::Init()
 	Object sphereObj;
 	sphereObj.posicao = XMFLOAT3(0.0f, 0.5f, 0.0f);
 	sphereObj.escala = XMFLOAT3(0.5f, 0.5f, 0.5f);
-	sphereObj.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f); // Yellow
+	sphereObj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
 	XMStoreFloat4x4(&sphereObj.world,
 		XMMatrixScaling(0.5f, 0.5f, 0.5f) *
 		XMMatrixTranslation(0.0f, 0.5f, 0.0f));
 	sphereObj.mesh = new Mesh(sphere);
 	sphereObj.vbuffer = new VertexBuffer<Vertex>(sphere);
 	sphereObj.ibuffer = new IndexBuffer<uint>(sphere);
+	sphereObj.originalVertices = sphere.vertices;
 
 	for (int i = 0; i < 4; ++i)
 		sphereObj.cbuffer[i] = new ConstantBuffer<Constants>();
@@ -154,15 +167,15 @@ void Multiple::Init()
 	// grid da cena (não selecionável ou removível)
 	gridObj.mesh = new Mesh(grid);
 
-	XMStoreFloat4x4(&gridObj.world, XMMatrixIdentity());
+	XMStoreFloat4x4(&gridObj.world, XMMatrixTranslation(0.0f, -0.1f, 0.0f)); // Lower the reference grid a bit
 	gridObj.vbuffer = new VertexBuffer<Vertex>(grid);
 	gridObj.ibuffer = new IndexBuffer<uint>(grid);
 	for (int i = 0; i < 4; ++i)
 		gridCBuffer[i] = new ConstantBuffer<Constants>();
 
 	// Pensando o que fazer com a grid
-    // Mas vou deixar como um objeto fixo, não removível, 
-    // independente da cena
+	// Mas vou deixar como um objeto fixo, não removível, 
+	// independente da cena
 	//scene.push_back(gridObj);
 
 
@@ -206,7 +219,7 @@ void Multiple::Update()
 	if (hasValidSelection()) {
 		Object& obj = scene[selectedIndex];
 		bool alterado = false;
-		float passoTrans = 0.005f; // passo de translação
+		float passoTrans = 0.01f; // passo de translação
 		float passoEscala = 0.002f; // passo de escala
 		float passoRot = XMConvertToRadians(1.5f); // passo de rotação em radianos
 
@@ -264,7 +277,7 @@ void Multiple::Update()
 	}
 
 	// ativa ou desativa o giro do objeto
-	if (input->KeyPress('S'))
+	if (input->KeyPress('Y'))
 	{
 		isSpinning = !isSpinning;
 		if (isSpinning)
@@ -278,16 +291,20 @@ void Multiple::Update()
 		isAltMode = !isAltMode;
 	}
 
-	// --- Adição de objeto ---
+	// Adição de objeto
 	if (input->KeyPress('B')) { // Box
 		Box box(2.0f, 2.0f, 2.0f, Orange);
 		Object obj;
 		// Garantir que a posição inicial está dentro do grid
 		obj.posicao = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		obj.color = XMFLOAT4(1.0f, 0.55f, 0.0f, 1.0f); // Orange
-		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());		obj.mesh = new Mesh(box);
+		obj.escala = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		obj.rotacao = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		obj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
+		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
+		obj.mesh = new Mesh(box);
 		obj.vbuffer = new VertexBuffer<Vertex>(box);
 		obj.ibuffer = new IndexBuffer<uint>(box);
+		obj.originalVertices = box.vertices;
 		for (int i = 0; i < 4; ++i)
 			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
@@ -299,11 +316,12 @@ void Multiple::Update()
 		Object obj;
 		// Garantir que a posição inicial está dentro do grid
 		obj.posicao = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		obj.color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f); // Yellow
-		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());		obj.mesh = new Mesh(cylinder);
+		obj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
+		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
+		obj.mesh = new Mesh(cylinder);
 		obj.vbuffer = new VertexBuffer<Vertex>(cylinder);
 		obj.ibuffer = new IndexBuffer<uint>(cylinder);
-		for (int i = 0; i < 4; ++i)
+		obj.originalVertices = cylinder.vertices;		for (int i = 0; i < 4; ++i)
 			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
@@ -314,10 +332,14 @@ void Multiple::Update()
 		Object obj;
 		// Garantir que a posição inicial está dentro do grid
 		obj.posicao = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		obj.color = XMFLOAT4(0.86f, 0.08f, 0.24f, 1.0f); // Crimson		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
+		obj.escala = XMFLOAT3(0.5f, 0.5f, 0.5f);
+		obj.rotacao = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		obj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
+		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
 		obj.mesh = new Mesh(sphere);
 		obj.vbuffer = new VertexBuffer<Vertex>(sphere);
 		obj.ibuffer = new IndexBuffer<uint>(sphere);
+		obj.originalVertices = sphere.vertices;
 		for (int i = 0; i < 4; ++i)
 			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
@@ -325,7 +347,7 @@ void Multiple::Update()
 		printf("Objeto inserido: %d\n", selectedIndex);
 	}
 
-	// --- Import OBJ files with keys 1-5 ---
+	// Importa objetos com as teclas 1-5
 	const char* objFiles[5] = {
 		"Exemplos/ball.obj",
 		"Exemplos/capsule.obj",
@@ -347,14 +369,14 @@ void Multiple::Update()
 				Geometry* geo = new Geometry();
 				geo->vertices.reserve(vertices.size());
 				for (const auto& v : vertices)
-					geo->vertices.push_back(Vertex{ v, XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f) });
+					geo->vertices.push_back(Vertex{ v, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) });
 				geo->indices.assign(indices.begin(), indices.end());
 
 				obj.mesh = new Mesh(*geo);
 				obj.vbuffer = new VertexBuffer<Vertex>(*geo);
 				obj.ibuffer = new IndexBuffer<uint>(*geo);
-				delete geo;
-				for (int i = 0; i < 4; ++i)
+				obj.originalVertices = geo->vertices;
+				delete geo;				for (int i = 0; i < 4; ++i)
 					obj.cbuffer[i] = new ConstantBuffer<Constants>();
 				scene.push_back(obj);
 				selectedIndex = (int)scene.size() - 1;
@@ -371,26 +393,26 @@ void Multiple::Update()
 		Object obj;
 		// Garantir que a posição inicial está dentro do grid
 		obj.posicao = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		obj.color = XMFLOAT4(0.0f, 0.4f, 1.0f, 1.0f); // Blue		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
+		obj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
 		obj.mesh = new Mesh(geosphere);
 		obj.vbuffer = new VertexBuffer<Vertex>(geosphere);
 		obj.ibuffer = new IndexBuffer<uint>(geosphere);
-		for (int i = 0; i < 4; ++i)
+		obj.originalVertices = geosphere.vertices;		for (int i = 0; i < 4; ++i)
 			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
 		printf("Objeto inserido: %d\n", selectedIndex);
 	}
-	if (input->KeyPress('P')) { // Plane
+	if (input->KeyPress('T')) { // Plane
 		Grid plane(3.0f, 3.0f, 20, 20, Gray);
 		Object obj;
 		// Garantir que a posição inicial está dentro do grid
 		obj.posicao = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		obj.color = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f); // Gray		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
+		obj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
 		obj.mesh = new Mesh(plane);
 		obj.vbuffer = new VertexBuffer<Vertex>(plane);
 		obj.ibuffer = new IndexBuffer<uint>(plane);
-		for (int i = 0; i < 4; ++i)
+		obj.originalVertices = plane.vertices;		for (int i = 0; i < 4; ++i)
 			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
@@ -401,12 +423,12 @@ void Multiple::Update()
 		Object obj;
 		// Garantir que a posição inicial está dentro do grid
 		obj.posicao = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		obj.color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f); // Green
+		obj.color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f); // White
 		XMStoreFloat4x4(&obj.world, XMMatrixIdentity());
 		obj.mesh = new Mesh(quad);
 		obj.vbuffer = new VertexBuffer<Vertex>(quad);
 		obj.ibuffer = new IndexBuffer<uint>(quad);
-		for (int i = 0; i < 4; ++i)
+		obj.originalVertices = quad.vertices;		for (int i = 0; i < 4; ++i)
 			obj.cbuffer[i] = new ConstantBuffer<Constants>();
 		scene.push_back(obj);
 		selectedIndex = (int)scene.size() - 1;
@@ -416,12 +438,20 @@ void Multiple::Update()
 	// TODO: Adicionar carregamento de modelos OBJ (teclas 1-5)
 
 	// --- Printa informação de seleção ---
-	static int prevSelectedIndex = -1;
+	// Highlight logic: update vertex color only when selection changes
 	if (selectedIndex != prevSelectedIndex) {
-		if (hasValidSelection())
+		// Restore previous selection color
+		if (prevSelectedIndex >= 0 && prevSelectedIndex < (int)scene.size()) {
+			SetObjectVertexColor(scene[prevSelectedIndex], scene[prevSelectedIndex].color);
+		}
+		// Highlight new selection
+		if (hasValidSelection()) {
+			SetObjectVertexColor(scene[selectedIndex], XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)); // highlight red
 			printf("Objeto selecionado: %d\n", selectedIndex);
-		else
+		}
+		else {
 			printf("Nenhum objeto selecionado\n");
+		}
 		prevSelectedIndex = selectedIndex;
 	}
 	// --- Seleção de objeto (TAB) ---
@@ -524,15 +554,15 @@ void Multiple::Draw()
 	{
 		for (int i = 0; i < 4; i++) {
 			graphics->CommandList()->RSSetViewports(1, &viewports[i]);
-            // Queria usar scissors, mas não funciona no modo alt como eu queria,
-            // pois eu teria que modificar as linhas de separação do viewport,
-            // então vou deixar comentado
+			// Queria usar scissors, mas não funciona no modo alt como eu queria,
+			// pois eu teria que modificar as linhas de separação do viewport,
+			// então vou deixar comentado
 			//graphics->CommandList()->RSSetScissorRects(1, &scissors[i]);
 
 			// ajusta a matriz de visualização e projeção para cada viewport
 			switch (i) {
 			case 0: // Front
-				pos = XMVectorSet(0.0f, 0.0f, -d, 1.0f);
+				pos = XMVectorSet(0.0f, 0.001f, -d, 1.0f);
 				target = XMVectorZero();
 				up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 				view = XMMatrixLookAtLH(pos, target, up);
@@ -550,7 +580,7 @@ void Multiple::Draw()
 
 
 				//Esquerda
-				pos = XMVectorSet(d, 0.0f, 0.0f, 1.0f);
+				pos = XMVectorSet(d, 0.001f, 0.0f, 1.0f);
 				target = XMVectorZero();
 				up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 				view = XMMatrixLookAtLH(pos, target, up);
@@ -597,16 +627,11 @@ void Multiple::Draw()
 			for (int j = 0; j < (int)scene.size(); ++j)
 			{
 				auto& obj = scene[j];
+				// Não atualiza cor dos vértices aqui; já feito em Update()
 				XMMATRIX world = XMLoadFloat4x4(&obj.world);
 				XMMATRIX WorldViewProj = world * view * proj;
 				XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
-
-				if (j == selectedIndex)
-					constants.color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-				else
-					constants.color = obj.color;
 				obj.cbuffer[i]->Copy(&constants);
-
 				graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer[i]->View());
 				graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
 				graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
@@ -645,16 +670,11 @@ void Multiple::Draw()
 		for (int j = 0; j < (int)scene.size(); ++j)
 		{
 			auto& obj = scene[j];
+			// Não atualiza cor dos vértices aqui; já feito em Update()
 			XMMATRIX world = XMLoadFloat4x4(&obj.world);
 			XMMATRIX WorldViewProj = world * view * proj;
 			XMStoreFloat4x4(&constants.WorldViewProj, XMMatrixTranspose(WorldViewProj));
-
-			if (j == selectedIndex)
-				constants.color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-			else
-				constants.color = obj.color;
 			obj.cbuffer[3]->Copy(&constants);
-
 			graphics->CommandList()->SetGraphicsRootConstantBufferView(0, obj.cbuffer[3]->View());
 			graphics->CommandList()->IASetVertexBuffers(0, 1, obj.vbuffer->View());
 			graphics->CommandList()->IASetIndexBuffer(obj.ibuffer->View());
@@ -664,7 +684,6 @@ void Multiple::Draw()
 				obj.mesh->baseVertex,
 				0);
 		}
-
 	}
 	// Desenha as linhas
 	if (isAltMode && lineVBuffer && lineCBuffer) {
@@ -718,8 +737,8 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	_In_ LPSTR lpCmdLine,
 	_In_ int nCmdShow)
 {
-    // Coloquei um console pra me ajudar a debugar,
-    // Achei legal na implementação e resolvi deixar aqui msm
+	// Coloquei um console pra me ajudar a debugar,
+	// Achei legal na implementação e resolvi deixar aqui msm
 	AllocConsole();
 	FILE* dummy;
 	freopen_s(&dummy, "CONOUT$", "w", stdout); // Redireciona stdout para o console

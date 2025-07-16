@@ -49,8 +49,13 @@ struct Object
     VertexBuffer<Vertex>* vbuffer = nullptr;
     IndexBuffer<uint>* ibuffer = nullptr;
     ConstantBuffer<Constants>* cbuffer[4] = { nullptr, nullptr, nullptr, nullptr };
+
+    std::vector<Vertex> originalVertices; // Cópia dos vértices originais para manipulação de cor
 };
 // ------------------------------------------------------------------------------
+
+// Atualiza a cor de todos os vértices do objeto
+void SetObjectVertexColor(Object& obj, const XMFLOAT4& color);
 
 class Multiple : public App
 {
@@ -71,6 +76,7 @@ private:
 
     std::vector<Object> scene;
     int selectedIndex = -1; // Index do objeto selecionado, -1 = cena vazia
+    int prevSelectedIndex = -1; // Guardar o objeto selecionado anteriormente
 
     // Lista de objetos pendentes para remoção
     // Usada para evitar remoção imediata durante o loop de atualização
