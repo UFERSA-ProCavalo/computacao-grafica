@@ -365,7 +365,7 @@ void Multiple::Update()
 			selectedIndex = (int)scene.size() - 1;
 			printf("Objeto inserido: %d\n", selectedIndex);
 		}
-		if (input->KeyPress('T')) { // Plane
+		if (input->KeyPress('P')) { // Plane
 			Grid plane(3.0f, 3.0f, 20, 20, Gray);
 			Object obj = CreateObject(plane);
 			scene.push_back(obj);
@@ -755,8 +755,6 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 		engine->window->Color(25, 25, 25);
 		engine->window->Title("Multiple");
 		engine->window->Icon("Icon");
-		engine->window->LostFocus(Multiple::Pause);
-		engine->window->InFocus(Multiple::Resume);
 		engine->graphics->VSync(true);
 
 		// cria e executa a aplicação
